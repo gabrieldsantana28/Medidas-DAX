@@ -1,0 +1,15 @@
+% Meta (YTD) = 
+VAR ClienteFiltro = SELECTEDVALUE('Clientes'[Base])
+VAR MesFiltro = MAX('Filtro_Auxiliar'[Numero_Filtro])
+VAR AnoFiltro = MAX('Calendario'[Ano])
+
+RETURN
+CALCULATE(
+    AVERAGE('CONSUMO'[Meta RTKs %]),
+    FILTER(
+        ALL('CONSUMO'),
+        'CONSUMO'[Base] = ClienteFiltro &&
+        'CONSUMO'[Mês_Numero] <= MesFiltro &&
+        'CONSUMO'[Ano de criação] = AnoFiltro
+    )
+)
