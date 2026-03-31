@@ -1,0 +1,20 @@
+-- Exibe meta para o mês selecionado
+% Meta (Mês) = 
+VAR MesFiltro = SELECTEDVALUE('Filtro_Auxiliar'[Numero_Filtro])
+VAR AnoFiltro = SELECTEDVALUE('Calendario'[Ano])
+VAR ClienteFiltro = SELECTEDVALUE('Clientes'[Cliente])
+
+RETURN
+IF(
+    NOT ISBLANK(MesFiltro),
+    CALCULATE(
+        AVERAGE('CONSUMO'[Meta Quebras %]),
+        FILTER(
+            ALL('CONSUMO'),
+            'CONSUMO'[Cliente] = ClienteFiltro && 
+            'CONSUMO'[Mês_Numero] = MesFiltro && 
+            'CONSUMO'[Ano de criação] = AnoFiltro
+        )
+    ),
+    "--"
+)
