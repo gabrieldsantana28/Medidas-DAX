@@ -1,0 +1,37 @@
+% Quebra Mensal Real = 
+VAR MesSelecionado = SELECTEDVALUE('Filtro_Auxiliar'[Numero_Filtro])
+VAR AnoSelecionado = SELECTEDVALUE('Calendario'[Ano])
+
+-- Captura o mês de cada barra no eixo do gráfico
+VAR MesNoEixo = MAX('Calendario'[Mes_Numero])
+
+-- Define se a barra deve ser exibida (menor ou igual ao filtro)
+VAR MostrarDado = 
+    IF(
+        ISBLANK(MesSelecionado), 
+        TRUE(), 
+        MesNoEixo <= MesSelecionado
+    )
+
+RETURN
+IF(
+    MostrarDado,
+    VAR vQuebraTotal = 
+        CALCULATE(
+            SUM(QUEBRAS[Valor Total]),
+            ALL('Filtro_Auxiliar'), -- Limpa o filtro para permitir ver meses anteriores no eixo
+            'Calendario'[Ano] = AnoSelecionado
+        )
+    
+    VAR vConsumoMensal = 
+        CALCULATE(
+            AVERAGE(QUEBRAS[Consumo Real (KTC+OTC)]),
+            ALL('Filtro_Auxiliar'),
+            'Calendario'[Ano] = AnoSelecionado
+        )
+
+    RETURN
+    DIVIDE(vQuebraTotal, vConsumoMensal, 0),
+    
+    BLANK()
+)
